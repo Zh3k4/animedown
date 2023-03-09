@@ -1,0 +1,6 @@
+*.o
+animedown
+config.h
+tags
+
+animedown-*.tar.gzip
