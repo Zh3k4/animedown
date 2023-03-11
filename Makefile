@@ -5,6 +5,9 @@ OBJ = ${SRC:.c=.o}
 
 all: options ${PROGRAM}
 
+run: options ${PROGRAM}
+	./${PROGRAM}
+
 options:
 	@echo ${PROGRAM} build options:
 	@echo "CFLAGS   = ${CFLAGS}"
