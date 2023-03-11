@@ -12,12 +12,28 @@
 
 #include "config.h"
 
+#ifdef DEBUG
+static void
+print_cmd(char **argv)
+{
+	fprintf(stderr, ">>>");
+	while (*argv != NULL) {
+		fprintf(stderr, " '%s'", *argv);
+		argv++;
+	}
+	fprintf(stderr, "\n");
+}
+#endif
+
 static void
 cmd(char **argv)
 {
 	pid_t child = fork();
 
 	if (child == 0) {
+#ifdef DEBUG
+		print_cmd(argv);
+#endif
 		if (execvp(argv[0], argv) < 0) {
 			perror("Error: Cannot execute child proccess");
 			exit(EXIT_FAILURE);
@@ -48,6 +64,9 @@ cmdfd(char **argv, int fdin, int fdout)
 			close(STDOUT_FILENO);
 			dup2(fdout, STDOUT_FILENO);
 		}
+#ifdef DEBUG
+		print_cmd(argv);
+#endif
 		if (execvp(argv[0], argv) < 0) {
 			perror("Error: Cannot execute child proccess");
 			exit(EXIT_FAILURE);
