@@ -185,36 +185,37 @@ main(void)
 	char **pipeline1[] = {cmd_curl, cmd_sfeed, cmd_grep, NULL};
 	char **pipeline2[] = {cmd_awk, cmd_curl2, NULL};
 
-	int p1[2];
-	int p2[2];
+	int p[2];
+	char *feed = "/tmp/feed.tsv";
+	int fdfeed = open(feed, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
 
-	if (pipe(p1) == -1 || pipe(p2) == -1) {
+	if (pipe(p) == -1) {
 		perror("Could not create pipe in main");
 		exit(EXIT_FAILURE);
 	}
 	
-	dup2(p1[1], STDOUT_FILENO);
+	dup2(fdfeed, STDOUT_FILENO);
 	if (!cmd_pipeline(pipeline1)) perror("Error: pipeline1 failed");
-	close(p1[1]);
 
-	dup2(p1[0], STDIN_FILENO);
-	dup2(p2[1], STDOUT_FILENO);
+	dup2(fdfeed, STDIN_FILENO);
+	dup2(p[1], STDOUT_FILENO);
 	for (size_t i = 0; filter[i] != NULL; i += 1) {
-		lseek(STDIN_FILENO, 0, SEEK_SET);
+		lseek(fdfeed, 0, SEEK_SET);
 		cmd((char *[]){"grep", "-F", filter[i], NULL});
 	}
-	close(p1[0]);
-	close(p2[1]);
+	close(fdfeed);
+	remove(feed);
+	close(p[1]);
 
-	dup2(p2[0], STDIN_FILENO);
+	dup2(p[0], STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	if (!cmd_pipeline(pipeline2)) perror("Error: pipeline2 failed");
-	close(p2[0]);
+	close(p[0]);
 
 	/* cmd((char *[]){"rsync", "-rcu", ".", cache_dir,  NULL}); */
 
 	cmd((char *[]){"fdfind", ".", cache_dir, "-tf", "-etorrent", "--changed-within", "15min", "-X", "cp", "-t", "/var/lib/transmission-daemon/watch/", "--", NULL});
-	cmd((char *[]){"fdfind", ".", cache_dir, "-tf", "-etorrent", "--change-older-than", "5d", "-X", "rm", "--", NULL});
+	cmd((char *[]){"fdfind", ".", cache_dir, "-tf", "-etorrent", "--change-older-than", "2h", "-X", "rm", "--", NULL});
 
 	/* cmd((char *[]){"rm", "-rf", temp_dir, NULL}); */
 	free(cache_dir);
