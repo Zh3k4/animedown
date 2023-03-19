@@ -10,7 +10,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "config.h"
+#include "./config.h"
 
 #ifdef DEBUG
 static void

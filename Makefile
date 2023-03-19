@@ -1,7 +1,7 @@
 include config.mk
 
 SRC = ${PROGRAM}.c
-OBJ = ${SRC:.c=.o}
+OBJ = ${SRC:%.c=obj/%.o}
 
 all: options ${PROGRAM}
 
@@ -20,8 +20,8 @@ tags: ${SRC}
 		sed '/^$$/d' | sed '/\.o:[ \t]*$$/d' |\
 		ctags --languages=c,c++ --kinds-c=+p -R -L -
 
-.c.o:
-	${CC} -c $< ${CFLAGS}
+obj/%.o: %.c
+	${CC} -c $< -o $@ ${CFLAGS}
 
 ${OBJ}: config.h config.mk
 
