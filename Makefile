@@ -16,8 +16,8 @@ options:
 
 tags: ${SRC}
 	${CC} -M ${SRC} |\
-		sd '\\' '' | sd ' ' '\n' |\
-		sed '/^$$/d' | sed '/\.o:[ \t]*$$/d' |\
+		sed -e 's,\\,,' -e 's, ,\n,' |\
+		sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' |\
 		ctags --languages=c,c++ --kinds-c=+p -R -L -
 
 obj/%.o: %.c
