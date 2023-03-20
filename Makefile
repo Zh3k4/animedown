@@ -20,7 +20,10 @@ tags: ${SRC}
 		sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' |\
 		ctags --languages=c,c++ --kinds-c=+p -R -L -
 
-obj/%.o: %.c
+obj/:
+	mkdir -p obj/
+
+obj/%.o: obj/ %.c
 	${CC} -c $< -o $@ ${CFLAGS}
 
 ${OBJ}: config.h config.mk
