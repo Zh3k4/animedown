@@ -1,15 +1,16 @@
 include config.mk
 
-SRC = $(PROGRAM).c
-OBJ = $(SRC:%.c=obj/%.o)
+.PHONY: all options clean dist install uninstall
 
-all: options $(PROGRAM)
+SRC = animedown.c
+OBJ = $(SRC:.c=.o)
 
-run: options $(PROGRAM)
-	./$(PROGRAM)
+all: options animedown
 
-options:
-	@echo $(PROGRAM) build options:
+run: options animedown
+	./animedown
+
+options: @echo animedown build options:
 	@echo "CFLAGS   = $(CFLAGS)"
 	@echo "LDFLAGS  = $(LDFLAGS)"
 	@echo "CC       = $(CC)"
@@ -20,37 +21,33 @@ tags: $(SRC)
 		sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' |\
 		ctags --languages=c,c++ --kinds-c=+p -R -L -
 
-obj/%.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS)
+.c.o:
+	$(CC) -c $(CFLAGS) $<
 
-obj/:
-	mkdir -p obj/
-
-$(OBJ): obj/ config.h config.mk
+$(OBJ): config.h config.mk
 
 config.h:
 	cp config.def.h config.h
 
-$(PROGRAM): $(OBJ)
-	$(CC) -o $@ $^ $(LDFLAGS)
+animedown: $(OBJ)
+	$(CC) -o $@ $^
 
 clean:
-	rm -f $(OBJ) $(PROGRAM) $(PROGRAM)-*.tar.gz
+	rm -f animedown $(OBJ) animedown-$(VERSION).tar.gz
 
 dist: clean
-	mkdir -p $(PROGRAM)-$(VERSION)
-	cp -R Makefile README.md CHANGELOG.md config.def.h config.mk\
-		$(SRC) $(PROGRAM)-$(VERSION) || true
-	tar -cf $(PROGRAM)-$(VERSION).tar $(PROGRAM)-$(VERSION)
-	gzip $(PROGRAM)-$(VERSION).tar
-	rm -rf $(PROGRAM)-$(VERSION)
+	mkdir -p animedown-$(VERSION)
+	cp\
+		Makefile config.mk LICENSE README\
+		config.def.h $(SRC)\
+		animedown-$(VERSION)
+	tar -czf animedown-$(VERSION).tar.gz animedown-$(VERSION)
+	rm -rf animedown-$(VERSION)
 
 install:
 	mkdir -p $(PREFIX)/bin
-	cp -f $(PROGRAM) $(PREFIX)/bin
-	chmod 755 $(PREFIX)/bin/$(PROGRAM)
+	cp -f animedown $(PREFIX)/bin
+	chmod 755 $(PREFIX)/bin/animedown
 
 uninstall:
-	rm -f $(PREFIX)/bin/$(PROGRAM)
-
-.PHONY: all options clean dist install uninstall
+	rm -f $(PREFIX)/bin/animedown
