@@ -44,7 +44,6 @@ pmkdir(const char *const pathname)
 int
 main(void)
 {
-	free(cache_dir);
 	return EXIT_SUCCESS;
 }
 
