@@ -10,7 +10,8 @@ all: options animedown
 run: options animedown
 	./animedown
 
-options: @echo animedown build options:
+options:
+	@echo animedown build options:
 	@echo "CFLAGS   = $(CFLAGS)"
 	@echo "LDFLAGS  = $(LDFLAGS)"
 	@echo "CC       = $(CC)"
