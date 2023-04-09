@@ -31,7 +31,7 @@ config.h:
 	cp config.def.h config.h
 
 animedown: $(OBJ)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(LIBS)
 
 clean:
 	rm -f animedown $(OBJ) animedown-$(VERSION).tar.gz
