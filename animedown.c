@@ -52,6 +52,7 @@ main(void)
 	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)&m.memory);
 
 	result = curl_easy_perform(handle);
+	curl_easy_cleanup(handle);
 
 	if (result != CURLE_OK) {
 		fprintf(stderr, "Error: %s\n", curl_easy_strerror(result));
@@ -136,7 +137,7 @@ main(void)
 
 	MemoryRegion response = {0};
 
-	curl_easy_reset(handle);
+	handle = curl_easy_init();
 	curl_easy_setopt(handle, CURLOPT_URL, "http://127.0.0.1:9091/transmission/rpc");
 	curl_easy_setopt(handle, CURLOPT_POST, 1);
 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, "");
@@ -147,12 +148,14 @@ main(void)
 
 	if (result != CURLE_OK) {
 		fprintf(stderr, "Error: could not perform request\n");
+		curl_easy_cleanup(handle);
 		free(response.memory);
 		goto defer;
 	}
 
 	long code;
 	curl_easy_getinfo(handle, CURLINFO_RESPONSE_CODE, &code);
+	curl_easy_cleanup(handle);
 
 	if (code != 409) {
 		fprintf(stderr, "Error: wrong response code\n");
@@ -193,13 +196,14 @@ main(void)
 					"\"tag\": 8"
 					"}", (int)list[i].link.length, list[i].link.data);
 			
-			curl_easy_reset(handle);
+			handle = curl_easy_init();
 			curl_easy_setopt(handle, CURLOPT_URL, "http://127.0.0.1:9091/transmission/rpc");
 			curl_easy_setopt(handle, CURLOPT_POST, 1);
 			curl_easy_setopt(handle, CURLOPT_POSTFIELDS, json);
 			curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);
 
 			curl_easy_perform(handle);
+			curl_easy_cleanup(handle);
 
 			if (result != CURLE_OK) {
 				fprintf(stderr, "Error: could not upload magnet link\n");
@@ -213,7 +217,6 @@ main(void)
 defer:
 	if (list) free (list);
 	if (m.memory) free(m.memory);
-	if (handle) curl_easy_cleanup(handle);
 	curl_global_cleanup();
 	return EXIT_SUCCESS;
 }
