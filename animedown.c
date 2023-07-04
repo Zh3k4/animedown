@@ -13,15 +13,15 @@
 #define ZSTRING_IMPLEMENTATION
 #include "zstring.h"
 
-typedef struct {
+struct Torrent {
 	String title;
 	String link;
-} Torrent;
+};
 
-Torrent *
-torrent_list_add(Torrent *list, size_t *size, Torrent tor)
+struct Torrent *
+torrent_list_add(struct Torrent *list, size_t *size, struct Torrent tor)
 {
-	list = realloc(list, (*size + 1) * sizeof(Torrent));
+	list = realloc(list, (*size + 1) * sizeof(struct Torrent));
 	if (list == NULL) {
 		return NULL;
 	}
@@ -64,7 +64,7 @@ main(void)
 	XmlParser xml;
 	xml.cursor = m.memory;
 
-	Torrent *list = NULL;
+	struct Torrent *list = NULL;
 	size_t listsz = 0;
 
 	String title = {0};
@@ -87,8 +87,8 @@ main(void)
 		if (xml.kind == XML_ELEMENTEND && eq_to_cstr(xml.data, "item")
 				&& in_item) {
 			in_item = 0;
-			Torrent *res = torrent_list_add(list, &listsz,
-				(Torrent){
+			struct Torrent *res = torrent_list_add(list, &listsz,
+				(struct Torrent){
 					.title = title,
 					.link = link,
 					/* .filename = filename */
