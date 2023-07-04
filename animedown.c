@@ -79,7 +79,8 @@ main(void)
 			break;
 		}
 
-		if (xml.kind == XML_ELEMENTSTART && eq_to_cstr(xml.data, "item")) {
+		if (xml.kind == XML_ELEMENTSTART
+				&& eq_to_cstr(xml.data, "item")) {
 			in_item = 1;
 			continue;
 		}
@@ -94,7 +95,8 @@ main(void)
 					/* .filename = filename */
 				});
 			if (res == NULL) {
-				fprintf(stderr, "Error: could not append torrent list\n");
+				fprintf(stderr,
+					"Error: could not append torrent list\n");
 				goto defer;
 			}
 			list = res;
@@ -139,7 +141,8 @@ main(void)
 	MemoryRegion response = {0};
 
 	handle = curl_easy_init();
-	curl_easy_setopt(handle, CURLOPT_URL, "http://127.0.0.1:9091/transmission/rpc");
+	curl_easy_setopt(handle, CURLOPT_URL,
+		"http://127.0.0.1:9091/transmission/rpc");
 	curl_easy_setopt(handle, CURLOPT_POST, 1);
 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, "");
 	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_callback);
@@ -175,7 +178,10 @@ main(void)
 		++offset;
 	}
 
-	String session_id = {.data = (response.memory + start), .length = (offset - start)};
+	String session_id = {
+		.data = (response.memory + start),
+		.length = (offset - start)
+	};
 	struct curl_slist *headers = NULL;
 	char header[1024] = {0};
 	snprintf((char *)&header, 1024, "X-Transmission-Session-Id: %.*s",
@@ -191,14 +197,17 @@ main(void)
 
 			char json[2048];
 			snprintf((char *)&json, 2048,
-					"{"
-					"\"arguments\":{\"filename\":\"%.*s\"},"
-					"\"method\": \"torrent-add\","
-					"\"tag\": 8"
-					"}", (int)list[i].link.length, list[i].link.data);
-			
+				"{"
+				"\"arguments\":{\"filename\":\"%.*s\"},"
+				"\"method\": \"torrent-add\","
+				"\"tag\": 8"
+				"}",
+				(int)list[i].link.length,
+				list[i].link.data);
+
 			handle = curl_easy_init();
-			curl_easy_setopt(handle, CURLOPT_URL, "http://127.0.0.1:9091/transmission/rpc");
+			curl_easy_setopt(handle, CURLOPT_URL,
+				"http://127.0.0.1:9091/transmission/rpc");
 			curl_easy_setopt(handle, CURLOPT_POST, 1);
 			curl_easy_setopt(handle, CURLOPT_POSTFIELDS, json);
 			curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);
@@ -207,7 +216,8 @@ main(void)
 			curl_easy_cleanup(handle);
 
 			if (result != CURLE_OK) {
-				fprintf(stderr, "Error: could not upload magnet link\n");
+				fprintf(stderr,
+					"Error: could not upload magnet link\n");
 			}
 		}
 	}
