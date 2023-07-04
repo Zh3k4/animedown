@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <curl/curl.h>
 #include <errno.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -153,7 +154,7 @@ main(void)
 		goto defer;
 	}
 
-	long code;
+	int64_t code;
 	curl_easy_getinfo(handle, CURLINFO_RESPONSE_CODE, &code);
 	curl_easy_cleanup(handle);
 
