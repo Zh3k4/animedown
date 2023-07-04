@@ -1,7 +1,5 @@
 include config.mk
 
-.PHONY: all options clean dist install uninstall
-
 SRC = animedown.c
 OBJ = $(SRC:.c=.o)
 
@@ -52,3 +50,5 @@ install:
 
 uninstall:
 	rm -f $(PREFIX)/bin/animedown
+
+.PHONY: all options clean dist install uninstall
