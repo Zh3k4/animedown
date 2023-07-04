@@ -25,9 +25,6 @@ tags: $(SRC)
 
 $(OBJ): config.h config.mk
 
-config.h:
-	cp config.def.h config.h
-
 animedown: $(OBJ)
 	$(CC) -o $@ $^ $(LIBS)
 
@@ -40,7 +37,7 @@ dist: clean
 		Makefile config.mk LICENSE README\
 		config.def.h $(SRC)\
 		animedown-$(VERSION)
-	tar -czf animedown-$(VERSION).tar.gz animedown-$(VERSION)
+	tar czf animedown-$(VERSION).tar.gz animedown-$(VERSION)
 	rm -rf animedown-$(VERSION)
 
 install:
