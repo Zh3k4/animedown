@@ -17,13 +17,13 @@ typedef struct {
 	String data;
 } XmlParser;
 
-void xml_next(XmlParser *xml);
+void xml_next(XmlParser xml[static 1]);
 
 #endif /* XML_H_ */
 #ifdef XML_IMPLEMENTATION
 
 void
-xml_next(XmlParser *xml)
+xml_next(XmlParser xml[static 1])
 {
 	if (strncmp(xml->cursor, "</rss>", 6) == 0) {
 		xml->kind = XML_EOF;
@@ -37,7 +37,10 @@ xml_next(XmlParser *xml)
 		}
 
 		xml->kind = XML_META;
-		xml->data = (String){.data = start, .length = xml->cursor - start};
+		xml->data = (String){
+			.data = start,
+			.length = (size_t)(xml->cursor - start),
+		};
 
 		xml->cursor += 1;
 		return;
@@ -59,7 +62,7 @@ xml_next(XmlParser *xml)
 
 		xml->data = (String){
 			.data = start,
-			.length = xml->cursor - start
+			.length = (size_t)(xml->cursor - start)
 		};
 
 		xml->cursor += 1;
@@ -72,7 +75,7 @@ xml_next(XmlParser *xml)
 		xml->kind = XML_CHARDATA;
 		xml->data = (String){
 			.data = start,
-			.length = xml->cursor - start
+			.length = (size_t)(xml->cursor - start)
 		};
 	}
 }

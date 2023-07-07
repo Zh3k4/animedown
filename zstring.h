@@ -1,6 +1,7 @@
 #ifndef ZSTRING_H_
 #define ZSTRING_H_
 
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct {
@@ -17,7 +18,7 @@ int eq_to_cstr(String a, char *b);
 int
 zstring_list_add(String *list, size_t *size, String str)
 {
-	String *newlist = realloc(list, (*size + 1) * sizeof(String));
+	String *newlist = (String *)realloc(list, (*size + 1) * sizeof(String));
 	if (newlist == NULL) {
 		return 0;
 	}

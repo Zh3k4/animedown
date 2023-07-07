@@ -1,8 +1,9 @@
 #ifndef UTIL_H_
 #define UTIL_H_
 
+#include <errno.h>
 #include <stdio.h>
-/* #include <stdlib.h> */
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -25,10 +26,10 @@ write_callback(void *content, size_t size, size_t nmemb, void *userp)
 	size_t realsize = size * nmemb;
 	MemoryRegion *m = (MemoryRegion *)userp;
 
-	char *p = realloc(m->memory, m->size + realsize + 1);
+	char *p = (char *)realloc(m->memory, m->size + realsize + 1);
 	if (p == NULL) {
-			fprintf(stderr, "Error: no memory\n");
-			return 1;
+		fprintf(stderr, "Error: no memory\n");
+		return 1;
 	}
 
 	m->memory = p;
@@ -47,10 +48,10 @@ get_cache_dir()
 	} else {
 		const char *home = getenv("HOME");
 		size_t cachesz = 128;
-		char *cache = calloc(sizeof(char), cachesz);
+		char *cache = (char *)calloc(sizeof(char), cachesz);
 
 		while (strlen(home) > cachesz - 7) {
-			char *newcache = realloc(cache, cachesz * 2);
+			char *newcache = (char *)realloc(cache, cachesz * 2);
 			if (newcache) {
 				cache = newcache;
 				cachesz *= 2;
