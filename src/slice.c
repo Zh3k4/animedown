@@ -1,22 +1,10 @@
-#ifndef ZSTRING_H_
-#define ZSTRING_H_
+#include "slice.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
-	char *data;
-	size_t length;
-} String;
-
-int zstring_arr_add(String *arr, String str);
-int eq_to_cstr(String a, char *b);
-
-#endif /* ZSTRING_H_ */
-#ifdef ZSTRING_IMPLEMENTATION
-
 int
-zstring_list_add(String *list, size_t *size, String str)
+slice_list_add(String *list, size_t *size, String str)
 {
 	String *newlist = (String *)realloc(list, (*size + 1) * sizeof(String));
 	if (newlist == NULL) {
@@ -47,6 +35,4 @@ eq_to_cstr(String a, char *b)
 
 	return 1;
 }
-
-#endif /* ZSTRING_IMPLEMENTATION  */
 

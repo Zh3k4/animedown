@@ -1,8 +1,6 @@
 #ifndef XML_H_
 #define XML_H_
 
-#include "zstring.h"
-
 enum XmlKind {
 	XML_EOF,
 	XML_META,

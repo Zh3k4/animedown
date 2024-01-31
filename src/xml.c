@@ -1,4 +1,5 @@
 #include "xml.h"
+#include "slice.h"
 
 void
 xml_next(XmlParser xml[static 1])

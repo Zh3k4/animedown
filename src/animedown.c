@@ -6,12 +6,9 @@
 #include <stdlib.h>
 
 #include "config.h"
-#define UTIL_IMPLEMENTATION
 #include "util.h"
-#define XML_IMPLEMENTATION
 #include "xml.h"
-#define ZSTRING_IMPLEMENTATION
-#include "zstring.h"
+#include "slice.h"
 
 struct Torrent {
 	String title;
