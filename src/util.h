@@ -14,7 +14,7 @@ typedef struct {
 } MemoryRegion;
 
 size_t write_callback(void *content, size_t size, size_t nmemb, void *userp);
-static char *get_cache_dir();
+static char *get_cache_dir(void);
 static int pmkdir(const char *const pathname);
 
 #endif /* UTIL_H_ */
@@ -41,7 +41,7 @@ write_callback(void *content, size_t size, size_t nmemb, void *userp)
 }
 
 static char *
-get_cache_dir()
+get_cache_dir(void)
 {
 	if (getenv("XDG_CACHE_HOME")) {
 		return getenv("XDG_CACHE_HOME");
