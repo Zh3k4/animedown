@@ -3,30 +3,15 @@ include config.mk
 SRC = animedown.c
 OBJ = $(SRC:.c=.o)
 
-all: options animedown
-
-run: options animedown
-	./animedown
-
-options:
-	@echo animedown build options:
-	@echo "CFLAGS   = $(CFLAGS)"
-	@echo "LDFLAGS  = $(LDFLAGS)"
-	@echo "CC       = $(CC)"
-
-tags: $(SRC)
-	$(CC) -M $(SRC) |\
-		sed -e 's,\\,,' -e 's, ,\n,' |\
-		sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' |\
-		ctags --languages=c,c++ --kinds-c=+p -R -L -
+animedown: $(OBJ)
+	@printf 'LD\t%s\n' $@
+	@$(CC) -o $@ $^ $(LIBS)
 
 .c.o:
-	$(CC) -c $(CFLAGS) $<
+	@printf 'CC\t%s\n' $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ): config.h config.mk
-
-animedown: $(OBJ)
-	$(CC) -o $@ $^ $(LIBS)
 
 clean:
 	rm -f animedown $(OBJ) animedown-$(VERSION).tar.gz
@@ -42,10 +27,15 @@ dist: clean
 
 install:
 	mkdir -p $(PREFIX)/bin
-	cp -f animedown $(PREFIX)/bin
-	chmod 755 $(PREFIX)/bin/animedown
+	install -m755 animedown $(PREFIX)/bin/animedown
 
 uninstall:
 	rm -f $(PREFIX)/bin/animedown
 
-.PHONY: all options clean dist install uninstall
+tags: $(SRC)
+	$(CC) -M $(SRC) |\
+		sed -e 's,\\,,' -e 's, ,\n,' |\
+		sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' |\
+		ctags --languages=c,c++ --kinds-c=+p -R -L -
+
+.PHONY: all clean dist install uninstall
