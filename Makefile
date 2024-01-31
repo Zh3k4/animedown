@@ -1,7 +1,7 @@
 include config.mk
 
-SRC = animedown.c
-OBJ = $(SRC:.c=.o)
+OBJ = src/animedown.o
+SRC = $(OBJ:.o=.c)
 
 animedown: $(OBJ)
 	@printf 'LD\t%s\n' $@
@@ -11,16 +11,16 @@ animedown: $(OBJ)
 	@printf 'CC\t%s\n' $@
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ): config.h config.mk
+$(OBJ): src/config.h config.mk
 
 clean:
 	rm -f animedown $(OBJ) animedown-$(VERSION).tar.gz
 
 dist: clean
 	mkdir -p animedown-$(VERSION)
-	cp\
-		Makefile config.mk LICENSE README\
-		config.def.h $(SRC)\
+	cp -r\
+		Makefile LICENSE README\
+		src\
 		animedown-$(VERSION)
 	tar czf animedown-$(VERSION).tar.gz animedown-$(VERSION)
 	rm -rf animedown-$(VERSION)
