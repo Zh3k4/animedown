@@ -1,4 +1,11 @@
-include config.mk
+VERSION = 0.1
+
+CFLAGS = -std=c99 -pedantic -Wall -Wextra -Os
+CFLAGS += -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=200809L
+CFLAGS += -Wno-unused-function
+LIBS = -lcurl
+
+PREFIX ?= $(HOME)/.local
 
 OBJ = src/animedown.o
 SRC = $(OBJ:.o=.c)
@@ -11,7 +18,7 @@ animedown: $(OBJ)
 	@printf 'CC\t%s\n' $@
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ): src/config.h config.mk
+$(OBJ): src/config.h Makefile
 
 clean:
 	rm -f animedown $(OBJ) animedown-$(VERSION).tar.gz
