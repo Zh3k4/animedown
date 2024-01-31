@@ -7,7 +7,11 @@ LIBS = -lcurl
 
 PREFIX ?= $(HOME)/.local
 
-OBJ = src/animedown.o
+OBJ = \
+	src/animedown.o \
+	src/slice.o \
+	src/util.o \
+	src/xml.o
 SRC = $(OBJ:.o=.c)
 
 animedown: $(OBJ)
